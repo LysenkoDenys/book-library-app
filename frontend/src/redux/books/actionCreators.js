@@ -4,6 +4,6 @@ export const addBook = (newBook) => {
   return { type: a.ADD_BOOK, payload: newBook };
 };
 
-export const deleteBook = (idBook) => {
-  return { type: a.DELETE_BOOK, payload: idBook };
+export const deleteBook = (id) => {
+  return { type: a.DELETE_BOOK, payload: id };
 };
