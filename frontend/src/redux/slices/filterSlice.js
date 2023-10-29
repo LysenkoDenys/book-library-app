@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   title: "",
+  author: "",
 };
 
 const filterSlice = createSlice({
@@ -24,15 +25,21 @@ const filterSlice = createSlice({
       // or
       // state.title='';
     },
+    setAuthorFilter: (state, action) => {
+      // we can mutate state thanks to immer library:
+      state.author = action.payload;
+    },
   },
 });
 
 //export action creator (the action setTitleFilter have the same name as property of object reducers):
 export const setTitleFilter = filterSlice.actions.setTitleFilter;
 export const resetFilters = filterSlice.actions.resetFilters;
+export const setAuthorFilter = filterSlice.actions.setAuthorFilter;
 // or with destructuring:
-// const { setTitleFilter, resetFilters } = filterSlice.actions;
+// const { setTitleFilter, resetFilters, setAuthorFilter } = filterSlice.actions;
 
 export const selectTitleFilter = (state) => state.filter.title;
+export const selectAuthorFilter = (state) => state.filter.author;
 
 export default filterSlice.reducer;
