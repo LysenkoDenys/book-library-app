@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   title: "",
   author: "",
+  onlyFavorite: false,
 };
 
 const filterSlice = createSlice({
@@ -20,7 +21,7 @@ const filterSlice = createSlice({
       // };
       // return state;
     },
-    resetFilters: (state) => {
+    resetFilters: () => {
       return { ...initialState };
       // or
       // state.title='';
@@ -29,6 +30,10 @@ const filterSlice = createSlice({
       // we can mutate state thanks to immer library:
       state.author = action.payload;
     },
+    setOnlyFavoriteFilter: (state) => {
+      // we can mutate state thanks to immer library:
+      state.onlyFavorite = !state.onlyFavorite; //toggle to opposite true/false
+    },
   },
 });
 
@@ -36,10 +41,12 @@ const filterSlice = createSlice({
 export const setTitleFilter = filterSlice.actions.setTitleFilter;
 export const resetFilters = filterSlice.actions.resetFilters;
 export const setAuthorFilter = filterSlice.actions.setAuthorFilter;
+export const setOnlyFavoriteFilter = filterSlice.actions.setOnlyFavoriteFilter;
 // or with destructuring:
-// const { setTitleFilter, resetFilters, setAuthorFilter } = filterSlice.actions;
+// const { setTitleFilter, resetFilters, setAuthorFilter, setOnlyFavoriteFilter } = filterSlice.actions;
 
 export const selectTitleFilter = (state) => state.filter.title;
 export const selectAuthorFilter = (state) => state.filter.author;
+export const selectOnlyFavoriteFilter = (state) => state.filter.onlyFavorite;
 
 export default filterSlice.reducer;
