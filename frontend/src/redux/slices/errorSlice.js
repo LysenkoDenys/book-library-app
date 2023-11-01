@@ -9,7 +9,7 @@ const errorSlice = createSlice({
     setError: (state, action) => {
       return action.payload;
     },
-    setError: () => {
+    clearError: () => {
       return initialState;
     },
   },
