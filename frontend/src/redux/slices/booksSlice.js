@@ -3,7 +3,10 @@ import axios from "axios";
 import createBookWithID from "../../utils/createBookWithID";
 import { setError } from "./errorSlice";
 
-const initialState = [];
+const initialState = {
+  books: [],
+  isLoadingViaAPI: false,
+};
 
 export const fetchBook = createAsyncThunk(
   "books/fetchBook",
@@ -17,7 +20,10 @@ export const fetchBook = createAsyncThunk(
       // execute extraReducer addCase because if promise is rejected
       // and catch block caught it - we have promise status fulfilled
       // and extraReducer addCase will execute:
-      throw error;
+      // option 1:
+      return thunkAPI.rejectWithValue(error);
+      // option 2:
+      // throw error;
     }
   }
 );
@@ -28,8 +34,14 @@ const booksSlice = createSlice({
   reducers: {
     setAddBook: (state, action) => {
       //thanks to immar:
-      // state.push(action.payload);
-      return [...state, action.payload];
+      // state.books.push(action.payload);
+      //or:
+      // state.books = [...state.books, action.payload];
+      // or:
+      return {
+        ...state,
+        books: [...state.books, action.payload],
+      };
     },
     setDeleteBook: (state, action) => {
       //thanks to immar:
@@ -37,40 +49,60 @@ const booksSlice = createSlice({
       // if (index !== -1) {
       //   state.splice(index, 1);
       // }
-      return [...state].filter((book) => book.id !== action.payload);
+      return {
+        ...state,
+        books: state.books.filter((book) => book.id !== action.payload),
+      };
     },
     setToggleFavoriteBook: (state, action) => {
       //thanks to immar:
-      // state.forEach((book) => {
+      // state.books.forEach((book) => {
       //   if (book.id === action.payload) {
       //     book.isFavorite = !book.isFavorite;
       //   }
       // });
-      return state.map((book) =>
-        book.id === action.payload
-          ? { ...book, isFavorite: !book.isFavorite }
-          : book
-      );
+      return {
+        ...state,
+        books: state.books.map((book) =>
+          book.id === action.payload
+            ? { ...book, isFavorite: !book.isFavorite }
+            : book
+        ),
+      };
     },
   },
   //option 1 - object:
-  // extraReducers: {
-  //   [fetchBook.fulfilled]: (state, action) => {
+  extraReducers: {
+    [fetchBook.pending]: (state) => {
+      state.isLoadingViaAPI = true;
+    },
+    [fetchBook.fulfilled]: (state, action) => {
+      state.isLoadingViaAPI = false;
+      if (action?.payload?.title && action?.payload?.author) {
+        //thanks to immar:
+        state.books.push(createBookWithID(action.payload, "API"));
+      }
+    },
+    [fetchBook.rejected]: (state) => {
+      state.isLoadingViaAPI = false;
+    },
+  },
+  // option 2 - function:
+  // extraReducers: (builder) => {
+  //   builder.addCase(fetchBook.pending, (state) => {
+  //     state.isLoadingViaAPI = true;
+  //   });
+  //   builder.addCase(fetchBook.fulfilled, (state, action) => {
+  //     state.isLoadingViaAPI = false;
   //     if (action.payload.title && action.payload.author) {
   //       //thanks to immar:
-  //       state.push(createBookWithID(action.payload, "API"));
+  //       state.books.push(createBookWithID(action.payload, "API"));
   //     }
-  //   },
+  //   });
+  //   builder.addCase(fetchBook.rejected, (state) => {
+  //     state.isLoadingViaAPI = false;
+  //   });
   // },
-  // option 2 - function:
-  extraReducers: (builder) => {
-    builder.addCase(fetchBook.fulfilled, (state, action) => {
-      if (action.payload.title && action.payload.author) {
-        //thanks to immar:
-        state.push(createBookWithID(action.payload, "API"));
-      }
-    });
-  },
 });
 
 //export action creator (the action setTitleFilter have the same name as property of object reducers):
@@ -94,6 +126,7 @@ export const setToggleFavoriteBook = booksSlice.actions.setToggleFavoriteBook;
 // export const { setAddBook, setDeleteBook, setToggleFavoriteBook } =
 //   booksSlice.actions;
 
-export const selectBooks = (state) => state.books;
+export const selectBooks = (state) => state.books.books;
+export const selectIsLoadingViaAPI = (state) => state.books.isLoadingViaAPI;
 
 export default booksSlice.reducer;
