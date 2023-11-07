@@ -4,7 +4,17 @@ const booksData = require("./data/books.json"); //import the book data
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors(
+    //deploy:===========================================
+    {
+      origin: ["http://book-lybrary-app.vercel.app"],
+      methods: ["POST", "GET"],
+      credentials: true,
+    }
+    //deploy:===========================================
+  )
+);
 
 function getRandomBook() {
   const randomIndex = Math.floor(Math.random() * booksData.length);
