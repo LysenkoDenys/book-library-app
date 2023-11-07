@@ -8,7 +8,7 @@ app.use(
   cors(
     //deploy:===========================================
     {
-      origin: ["http://book-lybrary-app.vercel.app"],
+      origin: ["http://book-lybrary-api.vercel.app"],
       methods: ["POST", "GET"],
       credentials: true,
     }
