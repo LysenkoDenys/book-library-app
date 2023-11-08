@@ -8,7 +8,7 @@ app.use(
   cors(
     //deploy:===========================================
     {
-      origin: ["http://book-lybrary-api.vercel.app"],
+      origin: ["https://book-lybrary-frontend.vercel.app"],
       methods: ["POST", "GET"],
       credentials: true,
     }
@@ -26,17 +26,17 @@ app.get("/random-book", (req, res) => {
   res.json(getRandomBook());
 });
 
-app.get("/", (req, res) => {
-  setTimeout(() => {
-    res.json(getRandomBook());
-  }, 2000);
-});
-
-// app.get("/random-book-delayed", (req, res) => {
+// app.get("/", (req, res) => {
 //   setTimeout(() => {
 //     res.json(getRandomBook());
 //   }, 2000);
 // });
+
+app.get("/random-book-delayed", (req, res) => {
+  setTimeout(() => {
+    res.json(getRandomBook());
+  }, 2000);
+});
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

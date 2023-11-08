@@ -42,7 +42,9 @@ const BookForm = () => {
 
   const handleAddRandomBookViaAPI = () => {
     // https://localhost:4000/random-book-delayed
-    dispatch(fetchBook("https://book-lybrary-api.vercel.app/"));
+    dispatch(
+      fetchBook("https://book-lybrary-api.vercel.app/random-book-delayed")
+    );
   };
 
   return (
