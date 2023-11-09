@@ -22,6 +22,10 @@ function getRandomBook() {
   return randomBook;
 }
 
+app.get("/", (req, res) => {
+  res.json("Hello there!");
+});
+
 app.get("/random-book", (req, res) => {
   res.json(getRandomBook());
 });
